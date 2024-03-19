@@ -10,7 +10,7 @@ int apocalypse(int N){
         string str_num = to_string(num);
         if (str_num.find("666") != string::npos) {
             cnt++;
-            if (count == n) {
+            if (cnt == num) {
                 return num;
             }
         }
@@ -23,7 +23,7 @@ int main() {
     int N;
     cin >> N;
 
-    int nth_apo = apocalypse(n);
+    int nth_apo = apocalypse(N);
 
     cout << N << "\n";
 
