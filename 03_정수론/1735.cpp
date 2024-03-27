@@ -6,8 +6,9 @@ int gcd(int d1, int d2){
     int r = d1 % d2;
     if (r==0)
         return d2;
-    else
+    else {
         return gcd(d2,r);
+    }
 }
 
 int main(){

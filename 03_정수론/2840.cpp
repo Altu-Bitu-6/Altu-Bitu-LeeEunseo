@@ -7,8 +7,7 @@ int main(){
     int N, K, S;
     cin >> N >> K >> S;
 
-    char* wheel = new char[N];
-    fill(wheel, wheel + N, '?');
+    vector<char> wheel(N, '?');
 
     bool unlucky=false;
     for (int i = 0; i < K; ++i) {
@@ -18,8 +17,9 @@ int main(){
 
         if (wheel[j % N] != '?')
             unlucky = true;
-        else
+        else{
             wheel[j % N] = c;
+        }
     }
 
     if (!unlucky){
@@ -29,8 +29,6 @@ int main(){
     }
     else
         cout << "!\n";
-
-    delete[] wheel;
 
     return 0;
 }
