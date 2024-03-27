@@ -4,64 +4,67 @@
 #include <algorithm>
 using namespace std;
 
-bool areCharactersSame(string str1, string str2) {
-    sort(str1.begin(), str1.end());
-    sort(str2.begin(), str2.end());
-    return str1 == str2;
+bool areSimilar(const string& str1, const string& str2) {
+    if (str1.length() != str2.length())
+        return false;
+
+    // Count occurrences of each character in str1 and str2
+    vector<int> count1(26, 0), count2(26, 0);
+    for (char c : str1)
+        count1[c - 'A']++;
+    for (char c : str2)
+        count2[c - 'A']++;
+
+    // Check if the counts of characters match
+    return count1 == count2;
 }
 
-// 하나의 문자만 다른지 확인
 bool isOneCharDifferent(const string& str1, const string& str2) {
-    if (str1.length() != str2.length())  {
+    if (str1.length() != str2.length())
         return false;
-    }
 
     int diffCnt = 0;
     for (size_t i = 0; i < str1.length(); ++i) {
-        if (str1[i] != str2[i]) diffCnt++;
-        if (diffCnt > 1) return false;
+        if (str1[i] != str2[i])
+            diffCnt++;
+        if (diffCnt > 1)
+            return false;
     }
     return diffCnt == 1;
 }
 
-// 하나의 문자를 빼면 같아지는지 확인
 bool isOneCharMissing(const string& longer, const string& shorter) {
-    if (longer.length() != shorter.length() + 1) return false;
+    if (longer.length() != shorter.length() + 1)
+        return false;
 
-    int diffIndex = 0;
-    while (diffIndex < shorter.length() && longer[diffIndex] == shorter[diffIndex]) {
-        diffIndex++;
+    size_t i = 0, j = 0;
+    while (i < shorter.length() && j < longer.length()) {
+        if (shorter[i] != longer[j]) {
+            if (i != j)
+                return false;
+            j++;
+        } else {
+            i++;
+            j++;
+        }
     }
-
-    // longer에서 한 문자를 뺀 나머지가 shorter와 같은지 확인
-    string longerModified = longer.substr(0, diffIndex) + longer.substr(diffIndex + 1);
-    return longerModified == shorter;
+    return true;
 }
 
 int main() {
     int N;
     cin >> N;
-    cin.ignore();
-
-    vector<string> strings(N);
-    for (int i = 0; i < N; ++i) {
-        getline(cin, strings[i]);
-    }
+    vector<string> words(N);
+    for (int i = 0; i < N; ++i)
+        cin >> words[i];
 
     int similar = 0;
-    string baseString = strings[0];
-
     for (int i = 1; i < N; ++i) {
-        if (areCharactersSame(baseString, strings[i])) {
+        if (areSimilar(words[0], words[i]) || isOneCharDifferent(words[0], words[i]) || isOneCharMissing(words[0], words[i]))
             similar++;
-        } else if (isOneCharDifferent(baseString, strings[i])) {
-            similar++;
-        } else if (isOneCharMissing(baseString, strings[i]) || isOneCharMissing(strings[i], baseString)) {
-            similar++;
-        }
     }
 
-    cout << similar << "\n"; // 비슷한 단어 수 출력
+    cout << similar << endl;
 
     return 0;
 }
