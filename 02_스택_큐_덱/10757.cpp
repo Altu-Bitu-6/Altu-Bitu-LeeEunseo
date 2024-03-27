@@ -1,5 +1,6 @@
 #include <iostream> // 구현, 임의 정밀도 / 큰 수 연산, 사칙연산, 수학
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
