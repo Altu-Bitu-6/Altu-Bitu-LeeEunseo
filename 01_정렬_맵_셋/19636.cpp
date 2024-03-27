@@ -1,4 +1,4 @@
-#include <iostream> // 구현
+#include <iostream>
 #include <cmath>
 
 using namespace std;
@@ -7,42 +7,40 @@ int main() {
     int W0, I0, T, D, I, A;
     cin >> W0 >> I0 >> T >> D >> I >> A;
 
-    // 다이어트 기간 동안 체중과 일일 기초 대사량을 계산
     int weight = W0, BMR = I0;
-    for (int i = 0; i < D; ++i) {
-        // 일일 에너지 소비량 계산
-        int energy_consumption = BMR + A;
+    bool danger_diet = false;
 
-        // 체중 변화 계산
+    for (int i = 0; i < D; ++i) {
+        int energy_consumption = BMR + A;
         weight += I - energy_consumption;
 
-        // 체중이 0 이하이거나 일일 기초 대사량이 0 이하이면 Danger Diet
         if (weight <= 0 || BMR <= 0) {
-            cout << "Danger Diet" << endl;
-            return 0;
+            danger_diet = true;
+            break;
         }
 
-        // 일일 에너지 섭취량과 일일 활동 대사량이 일일 기초 대사량 변화 역치를 초과하는 경우
         if (abs(I - energy_consumption) > T) {
-            // 일일 기초 대사량 변화 계산
-            BMR += (I - energy_consumption) / 2;
-
-            // 일일 기초 대사량이 0 이하이면 "Danger Diet" 출력 후 종료
-            if (BMR <= 0) {
-                cout << "Danger Diet" << "\n";
-                return 0;
+            int BMR_change = (I - energy_consumption) / 2;
+            if (BMR + BMR_change <= 0) {
+                danger_diet = true;
+                break;
             }
+            BMR += BMR_change;
         }
     }
 
-    // 다이어트 후의 체중과 일일 기초 대사량 출력
-    cout << weight << " " << BMR << "\n";
-
-    // 요요 현상 여부 출력
-    if (BMR > I0) {
-        cout << "YOYO" << "\n";
+    if (danger_diet) {
+        cout << "Danger Diet" << endl;
     } else {
-        cout << "NO" << "\n";
+        cout << weight << " " << BMR << endl;
+        // 다이어트가 끝난 후 체중이 증가하는 경우에 대한 출력
+        if (BMR > I0) {
+            // 다이어트가 끝난 후 원래의 일일 에너지 섭취량과 일일 활동 대사량
+            cout << W0 - weight + W0 << " " << I0 << " YOYO" << endl;
+        } else {
+            // 다이어트가 끝난 후에도 체중이 감소하지 않는 경우
+            cout << weight << " " << BMR << " NO" << endl;
+        }
     }
 
     return 0;

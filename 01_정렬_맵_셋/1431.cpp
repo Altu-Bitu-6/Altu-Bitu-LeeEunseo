@@ -36,6 +36,7 @@ bool compare(const string& a, const string& b) {
 int main() {
     int n;
     cin >> n;
+    cin.ignore();
 
     vector<string> strings(n);
 
