@@ -1,13 +1,12 @@
 #include <iostream>
-#include <set>
+#include <bitset>
 using namespace std;
 
-int main(){
+int main() {
     int M;
     cin >> M;
-    int lcm;
 
-    set<int> S; // 집합 S 선언
+    int bitmask = 0; // 비트마스크로 집합을 표현 (0~20)
 
     for (int i = 0; i < M; ++i) {
         string command;
@@ -16,27 +15,20 @@ int main(){
 
         if (command == "add") {
             cin >> x;
-            S.insert(x);
+            bitmask |= (1 << x);
         } else if (command == "remove") {
             cin >> x;
-            S.erase(x);
+            bitmask &= ~(1 << x);
         } else if (command == "check") {
             cin >> x;
-            cout << (S.find(x) != S.end() ? 1 : 0) << '\n';
+            cout << ((bitmask & (1 << x)) ? 1 : 0) << '\n';
         } else if (command == "toggle") {
             cin >> x;
-            if (S.find(x) != S.end()) {
-                S.erase(x);
-            } else {
-                S.insert(x);
-            }
+            bitmask ^= (1 << x);
         } else if (command == "all") {
-            S.clear();
-            for (int j = 1; j <= 20; ++j) {
-                S.insert(j);
-            }
+            bitmask = (1 << 21) - 1;
         } else if (command == "empty") {
-            S.clear();
+            bitmask = 0;
         }
     }
 

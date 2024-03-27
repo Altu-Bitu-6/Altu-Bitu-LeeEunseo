@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 using namespace std;
 
 int apocalypse(int N){
@@ -7,25 +6,35 @@ int apocalypse(int N){
     int num = 666;
 
     while (true) {
-        string str_num = to_string(num);
-        if (str_num.find("666") != string::npos) {
-            cnt++;
-            if (count == n) {
-                return num;
+        int temp = num;
+        int count = 0;
+
+        while (temp > 0) {
+            if (temp % 10 == 6) {
+                count++;
+                if (count == 3) {
+                    cnt++;
+                    break;
+                }
+            } else {
+                count = 0;
             }
+            temp /= 10;
         }
+
+        if (cnt == N) {
+            return num;
+        }
+
         num++;
     }
 }
-
 
 int main() {
     int N;
     cin >> N;
 
-    int nth_apo = apocalypse(n);
-
-    cout << N << "\n";
+    cout << apocalypse(N) << "\n";
 
     return 0;
 }
