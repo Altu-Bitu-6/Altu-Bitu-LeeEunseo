@@ -17,7 +17,6 @@ int main() {
     for(int i = n-1; i >= 0; i--){
         if(earthSpeed<planet[i]){
             earthSpeed = planet[i];
-        }else if (earthSpeed == planet[i]) {  //변경 필요없음
         }else if (earthSpeed%planet[i]!=0){
             int tmpSpeed = planet[i];
             while(tmpSpeed<earthSpeed) {
