@@ -32,7 +32,7 @@ vector<int> josephus(int N, int K) {
 
 int main() {
     int N, K;
-    cin >> N >> K;    // 왜 무한루프?????
+    cin >> N >> K;
 
     vector<int> result = josephus(N, K);
 
