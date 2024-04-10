@@ -8,7 +8,7 @@ using namespace std;
 
 // 집합 S의 원소인지 검사
 int cntIsInSet(const set<string>& S, const vector<string>& check) {
-    int cnt=0;
+    int cnt = 0;
     // check의 원소를 하나씩 확인하며 S에 있는지 확인
     for (const string& element : check) {
         if (S.find(element) != S.end()) {

@@ -1,45 +1,52 @@
 #include <iostream>
-#include <cmath>
+#include <cmath>  // floor 함수
 
 using namespace std;
+
+void calculateWeightAndBMR(int W0, int I0, int I, int A, int D, int T, int& final_weight, int& final_BMR, bool consider_BMR_change) {
+    int weight = W0;
+    int BMR = I0;
+
+    for (int day = 0; day < D; ++day) {
+        int daily_consumed = BMR + A;
+        weight += I - daily_consumed;  // 체중 업데이트
+
+        if (consider_BMR_change && abs(I - daily_consumed) > T) {
+            int BMR_change = floor(float(I - daily_consumed) / 2.0);  // 음수 나눗셈 정확 처리
+            BMR += BMR_change;
+            if (BMR <= 0) {
+                weight = 0;  // BMR이 0 이하로 떨어지면 weight도 0으로 처리
+                break;
+            }
+        }
+    }
+
+    final_weight = weight;
+    final_BMR = BMR;
+}
 
 int main() {
     int W0, I0, T, D, I, A;
     cin >> W0 >> I0 >> T >> D >> I >> A;
 
-    int weight = W0, BMR = I0;
-    bool danger_diet = false;
+    int weight1, BMR1, weight2, BMR2;
+    calculateWeightAndBMR(W0, I0, I, A, D, T, weight1, BMR1, false); // 기초대사량 변화 고려 X
+    calculateWeightAndBMR(W0, I0, I, A, D, T, weight2, BMR2, true);  // 기초대사량 변화 고려 O
 
-    for (int i = 0; i < D; ++i) {
-        int energy_consumption = BMR + A;
-        weight += I - energy_consumption;
-
-        if (weight <= 0 || BMR <= 0) {
-            danger_diet = true;
-            break;
-        }
-
-        if (abs(I - energy_consumption) > T) {
-            int BMR_change = (I - energy_consumption) / 2;
-            if (BMR + BMR_change <= 0) {
-                danger_diet = true;
-                break;
-            }
-            BMR += BMR_change;
-        }
+    if (weight1 <= 0) {
+        cout << "Danger Diet\n";
+    } else {
+        cout << weight1 << " " << I0 << "\n";  // 기초대사량 변화 고려 X
     }
 
-    if (danger_diet) {
-        cout << "Danger Diet" << endl;
+    if (weight2 <= 0 || BMR2 <= 0) {
+        cout << "Danger Diet\n";
     } else {
-        cout << weight << " " << BMR << endl;
-        // 다이어트가 끝난 후 체중이 증가하는 경우에 대한 출력
-        if (BMR > I0) {
-            // 다이어트가 끝난 후 원래의 일일 에너지 섭취량과 일일 활동 대사량
-            cout << W0 - weight + W0 << " " << I0 << " YOYO" << endl;
+        cout << weight2 << " " << BMR2 << " ";
+        if (BMR2 > I0) {
+            cout << "YOYO\n";  // 요요 O
         } else {
-            // 다이어트가 끝난 후에도 체중이 감소하지 않는 경우
-            cout << weight << " " << BMR << " NO" << endl;
+            cout << "NO\n";    // 요요 X
         }
     }
 
