@@ -2,12 +2,12 @@
 
 using namespace std;
 
-int gcd(int d1, int d2){
+int GCD(int d1, int d2){
     int r = d1 % d2;
     if (r==0)
         return d2;
     else {
-        return gcd(d2,r);
+        return GCD(d2,r);
     }
 }
 
@@ -17,9 +17,9 @@ int main(){
     int lcm;
 
     if (b > d)
-        lcm = b*d / gcd(b,d);
+        lcm = b*d / GCD(b,d);
     else
-        lcm = b*d / gcd(d, b);
+        lcm = b*d / GCD(d, b);
 
     cout << a*(lcm/b)+c*(lcm/d) << " " << lcm << "\n";
 
