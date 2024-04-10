@@ -1,75 +1,74 @@
 #include <iostream>
 #include <deque>
-#include <stack>
-#include <algorithm>
 
 using namespace std;
 
-void RingTheBell(stack<int>& winGround, stack<int>& loseGround, deque<int>& Deque) {
-    while (!winGround.empty()) {
-        Deque.push_front(winGround.top());
-        winGround.pop();
+// 승자를 판단하여 결과를 출력하는 함수
+void Judge(const deque<int>& doDeque, const deque<int>& suDeque) {
+    if (doDeque.size() > suDeque.size()) cout << "do\n"; // 도도의 승리
+    else if (doDeque.size() < suDeque.size()) cout << "su\n"; // 수연의 승리
+    else cout << "dosu\n"; // 무승부
+}
+
+
+void RingTheBell(deque<int>& winGround, deque<int>& loseGround, deque<int>& winDeque) {
+    while (!loseGround.empty()) { // 진 사람 덱을 먼저 합치기
+        winDeque.push_back(loseGround.back());
+        loseGround.pop_back();
     }
-    while (!loseGround.empty()) {
-        Deque.push_back(loseGround.top());
-        loseGround.pop();
+    while (!winGround.empty()) { // 남은 자기 덱(이긴 사람 덱)을 뒤에 합치기
+        winDeque.push_back(winGround.back());
+        winGround.pop_back();
     }
 }
 
 void HalliGalli(deque<int>& doDeque, deque<int>& suDeque, int M) {
-    stack<int> doGround; // 도도의 그라운드 스택
-    stack<int> suGround; // 수연이의 그라운드 스택
+    deque<int> doGround;
+    deque<int> suGround;
 
-    int rounds = min(M, min(static_cast<int>(doDeque.size()), static_cast<int>(suDeque.size())));
-
-    for(int i = 0; i < rounds; ++i) {
-        doGround.push(doDeque.front()); // 도도 그라운드에 카드 내려놓기
-        doDeque.pop_front(); // 도도 덱에서 카드 삭제하기
-        suGround.push(suDeque.front()); // 수연이 그라운드에 카드 내려놓기
-        suDeque.pop_front(); // 수연이 덱에서 카드 삭제하기
-
-        if (!doGround.empty() && !suGround.empty()) {
-            if (doGround.top() + suGround.top() == 5) { // 수연이가 종 칠 때
-                RingTheBell(suGround, doGround, suDeque);
-            } else if (doGround.top() == 5 || suGround.top() == 5) { // 도도가 종 칠 때
-                RingTheBell(doGround, suGround, doDeque);
+    // 카드 순서대로 각자 그라운드에 내려놓기
+    for (int i = 0; i < M; ++i) {
+        if (i % 2 == 0) { // 도도의 차례
+            doGround.push_front(doDeque.front());
+            doDeque.pop_front();
+            if(doDeque.empty()) {
+                break;
+            }
+        } else { // 수연이의 차례
+            suGround.push_front(suDeque.front());
+            suDeque.pop_front();
+            if(suDeque.empty()) {
+                break;
             }
         }
-    }
 
-    int doRemaining = doDeque.size(); // 남은 도도의 카드 수
-    int suRemaining = suDeque.size(); // 남은 수연의 카드 수
-
-    if (doRemaining == 0 && suRemaining == 0) { // 둘 다 비었을 경우
-        cout << "dosu" << "\n";
-    } else if (doRemaining == 0) { // 도도의 덱만 비었을 경우
-        cout << "su" << "\n";
-    } else if (suRemaining == 0) { // 수연의 덱만 비었을 경우
-        cout << "do" << "\n";
-    } else if (doRemaining > suRemaining) { // 게임 진행 후 도도의 덱에 카드가 더 많을 경우
-        cout << "do" << "\n";
-    } else if (doRemaining < suRemaining) { // 게임 진행 후 수연의 덱에 카드가 더 많을 경우
-        cout << "su" << "\n";
-    } else { // 덱의 크기가 같을 경우
-        cout << "dosu" << "\n"; // 비긴 경우 "dosu" 출력
+        // 종을 치는 조건
+        if ((!doGround.empty() && doGround.front() == 5) || (!suGround.empty() && suGround.front() == 5)) {
+            RingTheBell(doGround, suGround, doDeque);  // 도도: 그라운드에 나와 있는 각각의 카드 더미 중 가장 위에 위치한 카드의 숫자가 5가 나오는 순간
+        }else if (!doGround.empty() && !suGround.empty() && (doGround.front() + suGround.front() == 5)) {
+            RingTheBell(suGround, doGround, suDeque); // 수연이: 양쪽 그라운드 모두에 카드가 있고 + 그라운드에 나와 있는 각각의 카드 더미에서 가장 위에 위치한 카드의 숫자 합이 5가 되는 순간
+        }
     }
+    Judge(doDeque, suDeque);
 }
 
-int main(){
+
+int main() {
     int N, M;
     cin >> N >> M;
 
-    deque<int> doDeque; // 도도 덱
-    deque<int> suDeque; // 수연이 덱
+    deque<int> doDeque, suDeque;
 
-    for(int i = 0; i < N; ++i) {
+    for (int i = 0; i < N; ++i) {
         int dodo, suyeon;
         cin >> dodo >> suyeon;
-        doDeque.push_back(dodo);
-        suDeque.push_back(suyeon);
+        doDeque.push_front(dodo);
+        suDeque.push_front(suyeon);
     }
 
     HalliGalli(doDeque, suDeque, M);
 
     return 0;
 }
+
+// && (!doDeque.empty() || !suDeque.empty())
