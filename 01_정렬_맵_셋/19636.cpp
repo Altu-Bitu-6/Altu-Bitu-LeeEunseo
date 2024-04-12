@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cmath>  // floor 함수
+#include <cmath>  // floor 함수 사용
 
 using namespace std;
 
@@ -18,6 +18,11 @@ void calculateWeightAndBMR(int W0, int I0, int I, int A, int D, int T, int& fina
                 weight = 0;  // BMR이 0 이하로 떨어지면 weight도 0으로 처리
                 break;
             }
+        }
+
+        if (weight <= 0) {  // 체중이 0 이하로 떨어진 경우
+            weight = 0;
+            break;
         }
     }
 
@@ -43,7 +48,7 @@ int main() {
         cout << "Danger Diet\n";
     } else {
         cout << weight2 << " " << BMR2 << " ";
-        if (BMR2 > I0) {
+        if (I0 > BMR2) {
             cout << "YOYO\n";  // 요요 O
         } else {
             cout << "NO\n";    // 요요 X
